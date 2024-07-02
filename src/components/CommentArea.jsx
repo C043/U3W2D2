@@ -1,22 +1,19 @@
-import { Component } from "react";
 import CommentsList from "./CommentsList";
 import AddComment from "./AddComment";
 import IsLoading from "./IsLoading";
 import { Alert } from "react-bootstrap";
+import { useEffect, useState } from "react";
 
-class CommentArea extends Component {
-  state = {
-    reviews: [],
-    isLoading: false,
-    hasError: false,
-  };
+const CommentArea = props => {
+  const [reviews, setReviews] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
-  fetchComments = async () => {
-    console.log(this.props);
+  const fetchComments = async () => {
     try {
-      this.setState({ isLoading: true });
+      setIsLoading(true);
       const resp = await fetch(
-        "https://striveschool-api.herokuapp.com/api/comments/" + this.props.asin,
+        "https://striveschool-api.herokuapp.com/api/comments/" + props.asin,
         {
           headers: {
             Authorization:
@@ -27,38 +24,38 @@ class CommentArea extends Component {
       );
       if (resp.ok) {
         const data = await resp.json();
-        this.setState({ reviews: data });
-        this.setState({ isLoading: false });
+        setReviews(data);
+        setIsLoading(false);
       } else {
         throw new Error("Errore nel recapitare i dati");
       }
     } catch (error) {
-      this.setState({ hasError: true, isLoading: false });
+      setHasError(true);
+      setIsLoading(false);
       console.log(error);
     }
   };
 
-  componentDidUpdate = prevProps => {
-    if (prevProps !== this.props) {
-      this.fetchComments();
+  useEffect(() => {
+    console.log("daje");
+    if (props.asin) {
+      fetchComments();
     }
-  };
+  }, [props]);
 
-  render() {
-    return (
-      <>
-        {this.props.asin === false && <Alert>Select a book</Alert>}
-        {this.state.hasError && (
-          <Alert className="mt-3" variant="danger">
-            Qualcosa è andato storto!
-          </Alert>
-        )}
-        {this.state.isLoading ? <IsLoading /> : <CommentsList reviews={this.state.reviews} />}
-        {this.props.asin && this.state.reviews.length < 1 ? <Alert>No reviews, add one!</Alert> : ""}
-        <AddComment asin={this.props.asin} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      {props.asin === false && <Alert>Select a book</Alert>}
+      {hasError && (
+        <Alert className="mt-3" variant="danger">
+          Qualcosa è andato storto!
+        </Alert>
+      )}
+      {isLoading ? <IsLoading /> : <CommentsList reviews={reviews} />}
+      {props.asin && reviews.length < 1 ? <Alert>No reviews, add one!</Alert> : ""}
+      <AddComment asin={props.asin} />
+    </>
+  );
+};
 
 export default CommentArea;

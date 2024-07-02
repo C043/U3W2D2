@@ -1,16 +1,10 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 
-class AddComment extends Component {
-  state = {
-    review: {
-      comment: "",
-      rate: 5,
-      elementId: this.props.asin,
-    },
-  };
+const AddComment = props => {
+  const [review, setReview] = useState({ comment: "", rate: 5, elementId: props.asin });
 
-  formHandler = async e => {
+  const formHandler = async e => {
     try {
       e.preventDefault();
       const resp = await fetch("https://striveschool-api.herokuapp.com/api/comments/", {
@@ -20,11 +14,11 @@ class AddComment extends Component {
             "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjZiZWQyNjdjMjM5YzAwMTUyZjRiMmUiLCJpYXQiOjE3MTk0ODc0NjQsImV4cCI6MTcyMDY5NzA2NH0.etOLICwJO7zEB3M0sNrl4SLSRePOVrlhw7mIBhrmOfE",
         },
         method: "POST",
-        body: JSON.stringify(this.state.review),
+        body: JSON.stringify(review),
       });
       if (resp.ok) {
         window.alert("Inviato!");
-        this.setState({ review: { comment: "", rate: 5, elementId: this.props.asin } });
+        setReview({ comment: "", rate: 5, elementId: props.asin });
       } else {
         throw new Error("Invio fallito");
       }
@@ -33,47 +27,45 @@ class AddComment extends Component {
     }
   };
 
-  componentDidUpdate = prevProps => {
-    if (prevProps !== this.props) {
-      this.setState({ review: { comment: "", rate: 5, elementId: this.props.asin } });
+  useEffect(() => {
+    if (props.asin) {
+      setReview({ comment: "", rate: 5, elementId: props.asin });
     }
-  };
+  }, [props]);
 
-  render() {
-    return (
-      <Form className="mx-2 mb-2" onSubmit={e => this.formHandler(e)}>
-        <Form.Group className="mb-3" controlId="comment">
-          <Form.Label>Comment</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="What do you think?"
-            value={this.state.review.comment}
-            onChange={e => this.setState({ review: { ...this.state.review, comment: e.target.value } })}
-            required
-            disabled={this.props.asin === false}
-          />
-        </Form.Group>
+  return (
+    <Form className="mx-2 mb-2" onSubmit={e => formHandler(e)}>
+      <Form.Group className="mb-3" controlId="comment">
+        <Form.Label>Comment</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="What do you think?"
+          value={review.comment}
+          onChange={e => setReview({ ...review, comment: e.target.value })}
+          required
+          disabled={props.asin === false}
+        />
+      </Form.Group>
 
-        <Form.Group className="mb-3" controlId="rate">
-          <Form.Label>Rating</Form.Label>
-          <Form.Select
-            value={this.state.review.rate}
-            onChange={e => this.setState({ review: { ...this.state.review, rate: e.target.value } })}
-            disabled={this.props.asin === false}
-          >
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </Form.Select>
-        </Form.Group>
-        <Button variant="primary" type="submit" disabled={this.props.asin === false}>
-          Submit
-        </Button>
-      </Form>
-    );
-  }
-}
+      <Form.Group className="mb-3" controlId="rate">
+        <Form.Label>Rating</Form.Label>
+        <Form.Select
+          value={review.rate}
+          onChange={e => setReview({ ...review, rate: e.target.value })}
+          disabled={props.asin === false}
+        >
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </Form.Select>
+      </Form.Group>
+      <Button variant="primary" type="submit" disabled={props.asin === false}>
+        Submit
+      </Button>
+    </Form>
+  );
+};
 
 export default AddComment;

@@ -17,7 +17,6 @@ const AddComment = props => {
         body: JSON.stringify(review),
       });
       if (resp.ok) {
-        window.alert("Inviato!");
         setReview({ comment: "", rate: 5, elementId: props.asin });
         props.fetchComments();
       } else {

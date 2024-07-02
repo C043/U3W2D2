@@ -42,6 +42,7 @@ const CommentArea = props => {
     if (props.asin) {
       fetchComments();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props, refresh]);
 
   return (

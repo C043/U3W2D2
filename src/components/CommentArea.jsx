@@ -8,7 +8,6 @@ const CommentArea = props => {
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [refresh, setRefresh] = useState(false);
 
   const fetchComments = async () => {
     try {
@@ -43,7 +42,7 @@ const CommentArea = props => {
       fetchComments();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props, refresh]);
+  }, [props]);
 
   return (
     <>
@@ -55,7 +54,7 @@ const CommentArea = props => {
       )}
       {isLoading ? <IsLoading /> : <CommentsList reviews={reviews} />}
       {props.asin && reviews.length < 1 ? <Alert>No reviews, add one!</Alert> : ""}
-      <AddComment asin={props.asin} setRefresh={() => setRefresh(refresh ? false : true)} />
+      <AddComment asin={props.asin} fetchComments={() => fetchComments()} />
     </>
   );
 };

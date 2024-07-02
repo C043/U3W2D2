@@ -4,19 +4,9 @@ import { useState } from "react";
 import CommentArea from "./CommentArea";
 
 const BookList = props => {
-  /*   state = {
-    query: "",
-    currentAsin: false,
-  };
- */
-
   const [currentAsin, setCurrentAsin] = useState(false);
   const [query, setQuery] = useState("");
 
-  /*   handleSelect = asin => {
-    this.setState({ currentAsin: asin });
-  };
- */
   return (
     <Container>
       <Form className="d-flex flex-column mb-3">
@@ -27,7 +17,7 @@ const BookList = props => {
             aria-describedby="inputGroup-sizing-big"
             type="text"
             value={query}
-            onChange={e => setQuery({ query: e.target.value })}
+            onChange={e => setQuery(e.target.value)}
           />
         </InputGroup>
       </Form>

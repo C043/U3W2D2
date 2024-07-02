@@ -19,6 +19,7 @@ const AddComment = props => {
       if (resp.ok) {
         window.alert("Inviato!");
         setReview({ comment: "", rate: 5, elementId: props.asin });
+        props.setRefresh();
       } else {
         throw new Error("Invio fallito");
       }

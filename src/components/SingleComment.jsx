@@ -1,15 +1,18 @@
-import { Component } from "react";
+import { useState } from "react";
 import { Alert, Button } from "react-bootstrap";
 import { Trash3 } from "react-bootstrap-icons";
-class SingleComment extends Component {
-  state = {
+const SingleComment = props => {
+  /*   state = {
     id: this.props.id,
     show: true,
   };
+ */
 
-  handleDelete = async () => {
+  const [show, setShow] = useState(true);
+
+  const handleDelete = async () => {
     try {
-      const resp = await fetch("https://striveschool-api.herokuapp.com/api/comments/" + this.state.id, {
+      const resp = await fetch("https://striveschool-api.herokuapp.com/api/comments/" + props.id, {
         headers: {
           Authorization:
             "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjZiZWQyNjdjMjM5YzAwMTUyZjRiMmUiLCJpYXQiOjE3MTk0ODc0NjQsImV4cCI6MTcyMDY5NzA2NH0.etOLICwJO7zEB3M0sNrl4SLSRePOVrlhw7mIBhrmOfE",
@@ -18,7 +21,9 @@ class SingleComment extends Component {
         method: "DELETE",
       });
       if (resp.ok) {
-        this.setState({ show: false });
+        setShow(false);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        props.fetchComments();
       } else {
         throw new Error("Errore nella cancellazione del dato");
       }
@@ -28,25 +33,23 @@ class SingleComment extends Component {
     }
   };
 
-  render() {
-    console.log(this.state.id);
-    return this.state.show ? (
-      <div className="d-flex flex-column">
-        <div className="d-flex align-items-center">
-          <p>
-            {this.props.author} <br /> gave {this.props.rate}/5 <br /> "{this.props.comment}"
-          </p>
-          <Button variant="danger" className="ms-auto" onClick={() => this.handleDelete()}>
-            <Trash3 />
-          </Button>
-        </div>
+  console.log(props.id);
+  return show ? (
+    <div className="d-flex flex-column">
+      <div className="d-flex align-items-center">
+        <p>
+          {props.author} <br /> gave {props.rate}/5 <br /> "{props.comment}"
+        </p>
+        <Button variant="danger" className="ms-auto" onClick={() => handleDelete()}>
+          <Trash3 />
+        </Button>
       </div>
-    ) : (
-      <Alert variant="danger">
-        Comment <b>deleted</b>
-      </Alert>
-    );
-  }
-}
+    </div>
+  ) : (
+    <Alert variant="danger">
+      Comment <b>deleted</b>
+    </Alert>
+  );
+};
 
 export default SingleComment;

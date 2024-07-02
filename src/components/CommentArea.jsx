@@ -52,7 +52,7 @@ const CommentArea = props => {
           Qualcosa è andato storto!
         </Alert>
       )}
-      {isLoading ? <IsLoading /> : <CommentsList reviews={reviews} />}
+      {isLoading ? <IsLoading /> : <CommentsList reviews={reviews} fetchComments={() => fetchComments()} />}
       {props.asin && reviews.length < 1 ? <Alert>No reviews, add one!</Alert> : ""}
       <AddComment asin={props.asin} fetchComments={() => fetchComments()} />
     </>
